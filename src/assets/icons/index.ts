@@ -1,5 +1,6 @@
-import { Search } from "@mui/icons-material";
+import { Search, Translate} from "@mui/icons-material";
 
 export {
   Search,
+  Translate
 }
