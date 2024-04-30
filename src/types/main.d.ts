@@ -26,5 +26,5 @@ interface IJobListing {
   major: string[];
   career_level: string[];
   languages: {[key: string]: number}[],
-  location: {country: string}
+  location?: {country: string}
 }

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useLazyGetAllJobsQuery } from "../../store/services/jobsApi";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import ListingCard from "../../components/ListingCard";
+import DebouncedInput from "../../components/DebouncedInput";
 
 
 const JobsList =()=>{
@@ -20,31 +22,37 @@ const JobsList =()=>{
 
 
   return isLoading? <p>Loadig...</p> :
-  error? <p>JSON.stringify(error)</p> : (
+  error? <p>{JSON.stringify(error)}</p> : (
   <div>
-    <div style={{maxWidth: "100%", overflowX: 'auto', position: 'sticky', top: 0}}>
-      {new Array(data?.results.pages).fill('page').map((_un, idx)=> (
-        <button
-          key={idx}
-          onClick={()=> setSearchParams({page: idx + ''})}
-          style={idx + 1 === data?.results.page? {color:'red'}: {}}
-        >
-          {idx + 1}
-        </button>
-      ))}
-    </div>
+    <nav style={{display: "flex", gap: 10}}>
+      <div style={{maxWidth: "70%", overflowX: 'auto', position: 'sticky', top: 0}}>
+        {new Array(data?.results.pages).fill('page').map((_un, idx)=> (
+          <button
+            key={idx}
+            onClick={()=> setSearchParams({page: idx + ''})}
+            style={idx + 1 === data?.results.page? {color:'red'}: {}}
+          >
+            {idx + 1}
+          </button>
+        ))}
+      </div>
+      <div style={{minWidth: 100}}>
+        <DebouncedInput
+          value=''
+          onChange={(searchStr)=> console.log(searchStr)}
+          label="search jobs"
+        />
+      </div>
+    </nav>
     <ul>
       {data?.results.jobs.map((job:IJobListing)=> (
-        <li
+        <ListingCard
           key={job.uuid}
-        >
-          <Link to={job.uuid} state={{page: searchParams.get('page')}}>
-            <h3>{job.title}</h3>
-          </Link>
-          <p>{job.location.country}</p>
-          <hr />
-          <span>{job.career_level}</span>
-        </li>
+          title={job.title}
+          tags={job.career_level}
+          location={job.location}
+          linkProps={{to: job.uuid, state: {page: searchParams.get('page')}}}
+        />
       ))}
     </ul>
   </div>
