@@ -27,6 +27,7 @@ export const jobsApi = createApi({
           itemQuery: query
         }
       }),
+      keepUnusedDataFor: 180
     })
   })
 })
