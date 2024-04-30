@@ -6,10 +6,10 @@ import ListingCard from "../../components/ListingCard";
 
 const JobInfo =()=>{
   const { jobId } = useParams();
-  const {state: {page}} = useLocation();
+  const {state: {page, query}} = useLocation();
   const navigate = useNavigate();
 
-  const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page}, {
+  const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page, query}, {
     skip: !page || !jobId,
     selectFromResult: (state) => state.data?.results.jobs as IJobListing[]
   });
