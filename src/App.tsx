@@ -1,45 +1,30 @@
-import { useEffect, useState } from 'react'
-import { useLazyGetAllJobsQuery } from './store/services/jobsApi'
+import { Suspense, lazy } from 'react'
 
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import JobsList from './pages/JobsList';
+
+const JobInfo = lazy(()=> import('./pages/JobInfo'));
 
 function App() {
-  const [listingPage, setListingPage] = useState(0);
-
-  const [getAllJobs, {data, isLoading, error}] = useLazyGetAllJobsQuery();
-
-  useEffect(()=> {
-    getAllJobs({page: listingPage}, true)
-  }, [getAllJobs, listingPage])
+  
 
 
-  return isLoading? <p>Loadig...</p> :
-    error? <p>JSON.stringify(error)</p> : (
-    <div>
-      <div style={{maxWidth: "100%", overflowX: 'auto', position: 'sticky', top: 0}}>
-        {new Array(data?.results.pages).fill('page').map((_un, idx)=> (
-          <button
-            key={idx}
-            onClick={()=> setListingPage(idx)}
-            style={idx === data?.results.page? {color:'red'}: {}}
-          >
-            {idx + 1}
-          </button>
-        ))}
-      </div>
-      <ul>
-        {data?.results.jobs.map(job=> (
-          <li
-            key={job.uuid}
-          >
-            <h3>{job.title}</h3>
-            <p>{job.location.country}</p>
-            <hr />
-            <span>{job.career_level}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
+  return (
+    <>
+      <header>
+        <h1>Job Hunter</h1>
+      </header>
+      <BrowserRouter>
+        <Suspense fallback={<div>Loading...</div>}> 
+            <Routes>
+              <Route path='/' element={<JobsList />}/>
+              <Route path='/:jobId' element={<JobInfo />} />
+            </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </>
+  );
 }
 
 export default App
