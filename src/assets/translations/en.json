@@ -1,0 +1,14 @@
+{
+  "loading": "Loading...",
+  "listPage": {
+    "loading": "Loading...",
+    "searchLabel": "search jobs",
+    "noJobs": "No Jobs",
+    "unmatchedSearch": "matching this search"
+  },
+  "jobPage": {
+    "redirecting": "redirecting to home page...",
+    "continueBrowsing": "continue browsing other oppourtinities",
+    "noDescription": "No Description"
+  }
+}

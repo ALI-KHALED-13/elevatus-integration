@@ -1,0 +1,14 @@
+{
+  "loading": "جارٍ التحميل...",
+  "listPage": {
+    "loading": "جارٍ التحميل...",
+    "searchLabel": "البحث عن وظائف",
+    "noJobs": "لا توجد وظائف",
+    "unmatchedSearch": "لا توجد تطابقات لهذا البحث"
+  },
+  "jobPage": {
+    "redirecting": "جارٍ التوجيه إلى الصفحة الرئيسية...",
+    "continueBrowsing": "متابعة تصفح الفرص الأخرى",
+    "noDescription": "لا يوجد وصف"
+  }
+}

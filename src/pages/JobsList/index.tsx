@@ -3,9 +3,11 @@ import { useLazyGetAllJobsQuery } from "../../store/services/jobsApi";
 import { useSearchParams } from "react-router-dom";
 import ListingCard from "../../components/ListingCard";
 import DebouncedInput from "../../components/DebouncedInput";
+import { useTranslation } from "react-i18next";
 
 
 const JobsList =()=>{
+  const {t} = useTranslation("listPage");
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
@@ -22,7 +24,7 @@ const JobsList =()=>{
   }, [getAllJobs, searchParams, setSearchParams, query])
 
 
-  return isLoading? <p>Loadig...</p> :
+  return isLoading? <p>{t('loading')}</p> :
   error? <p>{JSON.stringify(error)}</p> : data && (
   <main>
     <nav style={{display: "flex", gap: 10}}>
@@ -37,13 +39,12 @@ const JobsList =()=>{
           </button>
         ))}
       </div>
-      <div style={{minWidth: 100}}>
-        <DebouncedInput
-          value={query}
-          onChange={(searchStr)=> setQuery(searchStr)}
-          label="search jobs"
-        />
-      </div>
+      <DebouncedInput
+        value={query}
+        onChange={(searchStr)=> setQuery(searchStr)}
+        label={t('searchLabel')}
+        style={{display: 'inline-block', minWidth: 100, alignSelf: 'end'}}
+      />
     </nav>
     {data.results ? (
       <ul>
@@ -61,7 +62,7 @@ const JobsList =()=>{
         ))}
       </ul>
     ):(
-      <p>No jobs {query? 'matching this search': ''}</p>
+      <p>{t("noJobs")} {query? t("unmatchedSearch"): ''}</p>
     )}
     
   </main>

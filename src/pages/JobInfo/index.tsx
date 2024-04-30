@@ -2,9 +2,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { jobsApi } from "../../store/services/jobsApi";
 import { useEffect } from "react";
 import ListingCard from "../../components/ListingCard";
+import { useTranslation } from "react-i18next";
 
 
 const JobInfo =()=>{
+  const {t} = useTranslation("jobPage");
+
   const { jobId } = useParams();
   const {state: {page, query}} = useLocation();
   const navigate = useNavigate();
@@ -21,18 +24,25 @@ const JobInfo =()=>{
   }, [fetchedJobs, navigate])
   
   if (!fetchedJobs){
-    return <div>redirecting to home page...</div>
+    return <div>{t("redirecting")}</div>
   }
   const jobData = fetchedJobs.find(job=> job.uuid === jobId)
-
 
   return jobData && (
     <main style={{display: 'flex'}}>
       <section style={{width: "80%"}}>
         <h2>{jobData.title}</h2>
+        <p>
+          {jobData.description?
+            jobData.description.replace(/<\/?p>/g, "") 
+            : t("noDescription")
+          }
+        </p>
+        <div dangerouslySetInnerHTML={{ __html: jobData.requirements }}>
+        </div>
       </section>
       <aside>
-        <h3>continue browsing other oppourtinities</h3>
+        <h3>{t("continueBrowsing")}</h3>
         <ul>
         {fetchedJobs.slice(0, 6).map((job:IJobListing)=> job.uuid === jobId? null :
           <ListingCard
