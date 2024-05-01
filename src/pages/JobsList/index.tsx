@@ -15,9 +15,10 @@ const JobsList =()=>{
   const [getAllJobs, {data, isFetching, isLoading, error}] = useLazyGetAllJobsQuery();
 
   useEffect(()=> { // on mount
-    // if the inital visit of the web page (no page search param) || a refresh of the page where param exists but no fetch call happened yet
+    // if the inital visit of the web page (no page search param) ||
+    //a refresh of the page where param exists but no fetch call happened yet
     const pageParam = searchParams.get('page') as string || undefined;
-    if (!pageParam || !data && !isLoading){
+    if (!pageParam || (!data && !isLoading)){
       if (!pageParam){
         setSearchParams({page: '1'})
         getAllJobs({page: 0}, true)
@@ -46,7 +47,7 @@ const JobsList =()=>{
   <main>
     <nav style={{display: "flex", gap: 10}}>
       <div style={{width: "70%", overflowX: 'auto', position: 'sticky', top: 0, flexShrink: 0}}>
-        {data?.results?.pages && data.results.pages> 1 && new Array(data.results.pages).fill('page').map((_un, idx)=> (
+        {data?.results?.pages && data.results.pages> 1 && Array.from({ length: data.results.pages }).map((_un, idx)=> (
           <button
             key={idx}
             onClick={()=> handlePaginationClick(idx)}

@@ -12,17 +12,14 @@ const JobInfo =()=>{
   const {state: {page, query}} = useLocation();
   const navigate = useNavigate();
 
-
-  console.log({jobURI, page: page, ...(query?{query}:{})})
-
   const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page , ...(query ?{query}:{})}, {
     skip: page === undefined || !jobURI,
     selectFromResult: (state) =>  state.data?.results.jobs as IJobListing[]
   });
 
-  
 
   useEffect(()=> {
+    // navigate back to home page if there is no cached post with the given jobURI
     if (!fetchedJobs){
       navigate('/', {replace: true})
     }
@@ -31,6 +28,7 @@ const JobInfo =()=>{
   if (!fetchedJobs){
     return <div>{t("redirecting")}</div>
   }
+  
   const jobData = fetchedJobs.find(job=> job.uri === jobURI)
 
   return jobData && (
