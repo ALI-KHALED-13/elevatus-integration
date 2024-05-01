@@ -8,13 +8,16 @@ import { useTranslation } from "react-i18next";
 const JobInfo =()=>{
   const {t} = useTranslation("jobPage");
 
-  const { jobId } = useParams();
+  const { jobURI } = useParams();
   const {state: {page, query}} = useLocation();
   const navigate = useNavigate();
 
-  const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page - 1, query}, {
-    skip: !page || !jobId,
-    selectFromResult: (state) => state.data?.results.jobs as IJobListing[]
+
+  console.log({jobURI, page: page, ...(query?{query}:{})})
+
+  const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page , ...(query ?{query}:{})}, {
+    skip: page === undefined || !jobURI,
+    selectFromResult: (state) =>  state.data?.results.jobs as IJobListing[]
   });
 
   
@@ -28,7 +31,7 @@ const JobInfo =()=>{
   if (!fetchedJobs){
     return <div>{t("redirecting")}</div>
   }
-  const jobData = fetchedJobs.find(job=> job.uuid === jobId)
+  const jobData = fetchedJobs.find(job=> job.uri === jobURI)
 
   return jobData && (
     <main style={{display: 'flex'}}>
@@ -46,13 +49,13 @@ const JobInfo =()=>{
       <aside>
         <h3>{t("continueBrowsing")}</h3>
         <ul>
-        {fetchedJobs.slice(0, 6).map((job:IJobListing)=> job.uuid === jobId? null :
+        {fetchedJobs.slice(0, 6).map((job:IJobListing)=> job.uuid === jobURI? null :
           <ListingCard
             key={ job.uuid}
             title={job.title}
             tags={job.career_level}
             location={job.location}
-            linkProps={{to: "/" + job.uuid, state: {page: page}}}
+            linkProps={{to: "/" + job.uuid, state: {page: +page - 1}}}
           />
         )}
         </ul>

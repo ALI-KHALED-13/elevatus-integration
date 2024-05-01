@@ -34,7 +34,7 @@ function App() {
         <Suspense fallback={<div>{t('loading')}</div>}> 
             <Routes>
               <Route path='/' element={<JobsList />}/>
-              <Route path='/:jobId' element={<JobInfo />} />
+              <Route path='/:jobURI' element={<JobInfo />} />
             </Routes>
         </Suspense>
       

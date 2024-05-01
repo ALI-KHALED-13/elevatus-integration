@@ -29,7 +29,7 @@ const JobsList =()=>{
 
   const handlePaginationClick =(pageNum: number)=>{
     setSearchParams({page: pageNum + 1 + ''})
-    getAllJobs({page: pageNum, query}, true)
+    getAllJobs({page: pageNum, ...(query ?{query}:{})}, true)
   }
 
   const handleSearchInput =(searchStr:string)=> {
@@ -74,8 +74,8 @@ const JobsList =()=>{
               tags={job.career_level}
               location={job.location}
               linkProps={{
-                to: job.uuid,
-                state: {page: searchParams.get('page'), query: query}
+                to: job.uri,
+                state: {page: Number(searchParams.get('page')) - 1, ...(query ?{query}:{})}
               }}
             />
           ))}
