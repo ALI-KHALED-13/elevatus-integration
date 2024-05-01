@@ -16,9 +16,14 @@ const JobsList =()=>{
 
   useEffect(()=> { // on mount
     // if the inital visit of the web page (no page search param) || a refresh of the page where param exists but no fetch call happened yet
-    if (!searchParams.get('page') || !data && !isLoading){
-      setSearchParams({page: '1'})
-      getAllJobs({page: 0}, true)
+    const pageParam = searchParams.get('page') as string || undefined;
+    if (!pageParam || !data && !isLoading){
+      if (!pageParam){
+        setSearchParams({page: '1'})
+        getAllJobs({page: 0}, true)
+      } else {
+        getAllJobs({page: Number(pageParam) - 1}, true)
+      }
     }
   }, [getAllJobs, setSearchParams, searchParams, data, isLoading])
 
