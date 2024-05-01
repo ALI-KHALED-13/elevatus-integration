@@ -12,27 +12,39 @@ const JobsList =()=>{
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
 
-  const [getAllJobs, {data, isLoading, error}] = useLazyGetAllJobsQuery();
+  const [getAllJobs, {data, isFetching, isLoading, error}] = useLazyGetAllJobsQuery();
 
-  useEffect(()=> {
-    const page = searchParams.get('page');
-    if (page){
-      getAllJobs({page: +page, query: query}, true)
-    } else {
-      setSearchParams({page: '0'})
+  useEffect(()=> { // on mount
+    // if the inital visit of the web page (no page search param) || a refresh of the page where param exists but no fetch call happened yet
+    if (!searchParams.get('page') || !data && !isLoading){
+      setSearchParams({page: '1'})
+      getAllJobs({page: 0}, true)
     }
-  }, [getAllJobs, searchParams, setSearchParams, query])
+  }, [getAllJobs, setSearchParams, searchParams, data, isLoading])
 
+  const handlePaginationClick =(pageNum: number)=>{
+    setSearchParams({page: pageNum + 1 + ''})
+    getAllJobs({page: pageNum, query}, true)
+  }
+
+  const handleSearchInput =(searchStr:string)=> {
+    setQuery(searchStr)
+    setSearchParams({page: '1'}) // reset to first page
+    getAllJobs({
+      page: 0, 
+      query: searchStr
+    }, true)
+  }
 
   return isLoading? <p>{t('loading')}</p> :
   error? <p>{JSON.stringify(error)}</p> : data && (
   <main>
     <nav style={{display: "flex", gap: 10}}>
-      <div style={{maxWidth: "70%", overflowX: 'auto', position: 'sticky', top: 0}}>
-        {data?.results?.pages && new Array(data.results.pages).fill('page').map((_un, idx)=> (
+      <div style={{width: "70%", overflowX: 'auto', position: 'sticky', top: 0, flexShrink: 0}}>
+        {data?.results?.pages && data.results.pages> 1 && new Array(data.results.pages).fill('page').map((_un, idx)=> (
           <button
             key={idx}
-            onClick={()=> setSearchParams({page: idx + ''})}
+            onClick={()=> handlePaginationClick(idx)}
             style={idx + 1 === data?.results.page? {color:'red'}: {}}
           >
             {idx + 1}
@@ -41,26 +53,28 @@ const JobsList =()=>{
       </div>
       <DebouncedInput
         value={query}
-        onChange={(searchStr)=> setQuery(searchStr)}
+        onChange={handleSearchInput}
         label={t('searchLabel')}
         style={{display: 'inline-block', minWidth: 100, alignSelf: 'end'}}
       />
     </nav>
-    {data.results ? (
-      <ul>
-        {data?.results.jobs.map((job:IJobListing)=> (
-          <ListingCard
-            key={job.uuid}
-            title={job.title}
-            tags={job.career_level}
-            location={job.location}
-            linkProps={{
-              to: job.uuid,
-              state: {page: searchParams.get('page'), query: query}
-            }}
-          />
-        ))}
-      </ul>
+    {isFetching?//upon every page navigation or search input
+      <p>{t('loading')}</p>
+      :data.results ? (
+        <ul>
+          {data?.results.jobs.map((job:IJobListing)=> (
+            <ListingCard
+              key={job.uuid}
+              title={job.title}
+              tags={job.career_level}
+              location={job.location}
+              linkProps={{
+                to: job.uuid,
+                state: {page: searchParams.get('page'), query: query}
+              }}
+            />
+          ))}
+        </ul>
     ):(
       <p>{t("noJobs")} {query? t("unmatchedSearch"): ''}</p>
     )}

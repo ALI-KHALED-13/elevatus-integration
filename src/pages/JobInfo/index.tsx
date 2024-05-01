@@ -12,10 +12,12 @@ const JobInfo =()=>{
   const {state: {page, query}} = useLocation();
   const navigate = useNavigate();
 
-  const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page, query}, {
+  const fetchedJobs = jobsApi.endpoints.getAllJobs.useQueryState({page: +page - 1, query}, {
     skip: !page || !jobId,
     selectFromResult: (state) => state.data?.results.jobs as IJobListing[]
   });
+
+  
 
   useEffect(()=> {
     if (!fetchedJobs){
