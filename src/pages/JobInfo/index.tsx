@@ -3,6 +3,7 @@ import { jobsApi } from "../../store/services/jobsApi";
 import { useEffect } from "react";
 import ListingCard from "../../components/ListingCard";
 import { useTranslation } from "react-i18next";
+import './styles.css';
 
 
 const JobInfo =()=>{
@@ -32,9 +33,9 @@ const JobInfo =()=>{
   const jobData = fetchedJobs.find(job=> job.uri === jobURI)
 
   return jobData && (
-    <main style={{display: 'flex'}}>
-      <section style={{width: "80%"}}>
-        <h2>{jobData.title}</h2>
+    <main className="job-info">
+      <section className="job-info__content">
+        <h2 className="job-info__title">{jobData.title}</h2>
         <p>
           {jobData.description?
             jobData.description.replace(/<\/?p>/g, "") 
@@ -44,16 +45,16 @@ const JobInfo =()=>{
         <div dangerouslySetInnerHTML={{ __html: jobData.requirements }}>
         </div>
       </section>
-      <aside>
-        <h3>{t("continueBrowsing")}</h3>
-        <ul>
+      <aside className="job-info__jobs">
+        <h3 className="job-info__continue">{t("continueBrowsing")}</h3>
+        <ul className="job-info__list">
         {fetchedJobs.slice(0, 6).map((job:IJobListing)=> job.uuid === jobURI? null :
           <ListingCard
-            key={ job.uuid}
+            key={job.uuid}
             title={job.title}
             tags={job.career_level}
             location={job.location}
-            linkProps={{to: "/" + job.uuid, state: {page: +page - 1}}}
+            linkProps={{to: "/" + job.uri, state: {page: +page - 1}}}
           />
         )}
         </ul>

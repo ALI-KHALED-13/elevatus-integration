@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import ListingCard from "../../components/ListingCard";
 import DebouncedInput from "../../components/DebouncedInput";
 import { useTranslation } from "react-i18next";
+import './styles.css';
 
 
 const JobsList =()=>{
@@ -44,14 +45,14 @@ const JobsList =()=>{
 
   return isLoading? <p>{t('loading')}</p> :
   error? <p>{JSON.stringify(error)}</p> : data && (
-  <main>
-    <nav style={{display: "flex", gap: 10}}>
-      <div style={{width: "70%", overflowX: 'auto', position: 'sticky', top: 0, flexShrink: 0}}>
+  <main className="main">
+    <nav className="nav">
+      <div className="pagination">
         {data?.results?.pages && data.results.pages> 1 && Array.from({ length: data.results.pages }).map((_un, idx)=> (
           <button
             key={idx}
+            className={`pagination__button ${idx + 1 === data?.results.page ? 'pagination__button--active' : {}}`}
             onClick={()=> handlePaginationClick(idx)}
-            style={idx + 1 === data?.results.page? {color:'red'}: {}}
           >
             {idx + 1}
           </button>
@@ -67,7 +68,7 @@ const JobsList =()=>{
     {isFetching?//upon every page navigation or search input
       <p>{t('loading')}</p>
       :data.results ? (
-        <ul>
+        <ul className="jobs-list">
           {data?.results.jobs.map((job:IJobListing)=> (
             <ListingCard
               key={job.uuid}

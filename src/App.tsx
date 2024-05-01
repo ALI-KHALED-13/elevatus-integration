@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import JobsList from './pages/JobsList';
 import { useTranslation } from 'react-i18next';
 import { Translate } from '@mui/icons-material';
+import './App.css';
 
 const JobInfo = lazy(()=> import('./pages/JobInfo'));
 
@@ -18,17 +19,20 @@ function App() {
 
   return (
     <BrowserRouter>
-      <header style={{display: 'flex', justifyContent: 'space-evenly'}}>
-        <Link to="/" style={{cursor: 'pointer', textDecoration: 'none'}}>
-          <h1>Job Hunter</h1>
-        </Link>
-        <button
-          onClick={changeLanguageHandler}
-          style={{marginLeft: 'auto', alignSelf: 'center', padding: 5}}
-        >
-          {currentLanguage}
-          <Translate fontSize='small'/>
-        </button>
+      <header className="header">
+        <div className="header__container">
+          <Link to="/">
+            <h1>Job Hunter</h1>
+          </Link>
+          <button
+            className="translate-button"
+            onClick={changeLanguageHandler}
+            style={{marginLeft: 'auto', alignSelf: 'center', padding: 5}}
+          >
+            {currentLanguage}
+            <Translate fontSize='small'/>
+          </button>
+        </div>
       </header>
       
         <Suspense fallback={<div>{t('loading')}</div>}> 
